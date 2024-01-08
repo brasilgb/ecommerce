@@ -18,7 +18,7 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
     console.log(userUrlCheck);
     
     useEffect(() => {
-        if (!isUserAutenticated || userUrlCheck === false) {
+        if (!isUserAutenticated || userUrlCheck == false) {
             router.push(APP_ROUTES.public.login);
         }
     }, [isUserAutenticated, router, userUrlCheck]);
