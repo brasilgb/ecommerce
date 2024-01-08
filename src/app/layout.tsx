@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { usePathname } from "next/navigation";
 import { checkIsPublicRoute } from "@/functions/check-is-public-route";
 import PrivateRoute from "@/components/privateroute";
+import { checkUserUrlAccess } from "@/functions/check-user-url-access";
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -23,6 +24,8 @@ export default function RootLayout({
   const pathname = usePathname();
   const isPublicPage = checkIsPublicRoute(pathname!);
 
+  const userUrlCheck = checkUserUrlAccess(pathname);
+console.log(userUrlCheck);
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${roboto.variable}`}>
