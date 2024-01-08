@@ -11,13 +11,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const loadStorage = async () => {
-      const recoveredUser = localStorage.getItem('portal_user');
-      if (recoveredUser) {
-        setUser(JSON.parse(recoveredUser));
-      }
-    };
-    loadStorage();
+      const loadStorage = async () => {
+          const recoveredUser = localStorage.getItem('portal_user');
+          if (recoveredUser) {
+              setUser(JSON.parse(recoveredUser));
+          }
+      };
+      loadStorage();
   }, []);
 
   const signOut = () => {
