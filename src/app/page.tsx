@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 export default function Home() {
   const {authenticated} = useAuthContext();
-
+console.log(authenticated)
   const router = useRouter();
   useEffect(() => {
     if(!authenticated) {
