@@ -25,7 +25,7 @@ export default function RootLayout({
   const isPublicPage = checkIsPublicRoute(pathname!);
 
   const userUrlCheck = checkUserUrlAccess(pathname);
-console.log(userUrlCheck);
+console.log(userUrlCheck === true ? 'true': 'false');
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${roboto.variable}`}>
