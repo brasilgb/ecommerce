@@ -7,7 +7,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { usePathname } from "next/navigation";
 import { checkIsPublicRoute } from "@/functions/check-is-public-route";
 import PrivateRoute from "@/components/privateroute";
-import { checkUserUrlAccess } from "@/functions/check-user-url-access";
 
 const roboto = Roboto({
   subsets: ['latin'],
