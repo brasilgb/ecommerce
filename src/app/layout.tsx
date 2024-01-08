@@ -25,8 +25,8 @@ export default function RootLayout({
   const isPublicPage = checkIsPublicRoute(pathname!);
 
   const userUrlCheck = checkUserUrlAccess(pathname);
-console.log(userUrlCheck === true ? 'true': 'false');
-console.log(pathname.replace('/', ''));
+console.log('userUrlCheck', userUrlCheck === true ? 'true': 'false');
+console.log('pathname', pathname.replace('/', ''));
 
   return (
     <html lang="en" suppressHydrationWarning>
