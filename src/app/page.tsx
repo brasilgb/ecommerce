@@ -8,7 +8,7 @@ export default function Home() {
 
   const router = useRouter();
   useEffect(() => {
-    if(authenticated) {
+    if(!authenticated) {
       return router.push('/');
     }
   },[authenticated, router]);
