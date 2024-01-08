@@ -8,8 +8,6 @@ export const checkUserUrlAccess = (pathname:string) => {
                 return value.path == pathname.replace('/', '')
             });
             return hasMatch;
-        }else{
-            return;
         }
     }
 };
