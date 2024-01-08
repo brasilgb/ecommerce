@@ -9,7 +9,7 @@ console.log(authenticated)
   const router = useRouter();
   useEffect(() => {
     if(!authenticated) {
-      return router.push('/');
+      return router.push('http://portal.gruposolar.com.br');
     }
   },[authenticated, router]);
 
