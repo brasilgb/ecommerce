@@ -34,7 +34,7 @@ const Profile = () => {
                         className="text-sm text-gray-600 px-4 pb-3 flex items-center"
                     >
                         <IoPerson color="#6d6a6a" size={20} />
-                        <span className="ml-1">{user.userName}</span>
+                        <span className="ml-1">{user?.userName}</span>
                     </span>
                     <span className="w-full border-b border-gray-200"></span>
                     <button
