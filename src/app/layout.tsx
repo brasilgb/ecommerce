@@ -26,6 +26,8 @@ export default function RootLayout({
 
   const userUrlCheck = checkUserUrlAccess(pathname);
 console.log(userUrlCheck === true ? 'true': 'false');
+console.log(pathname.replace('/', ''));
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${roboto.variable}`}>
