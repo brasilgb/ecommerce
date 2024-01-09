@@ -1,8 +1,9 @@
 'use client'
 import servicepush from "@/services/servicepush";
+import Link from "next/link";
 import React, { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
-import { IoCheckbox, IoCheckmark, IoNotifications, IoSearch } from "react-icons/io5";
+import { IoArrowBack, IoCheckbox, IoCheckmark, IoNotifications, IoSearch } from "react-icons/io5";
 import { RiLoader3Fill } from "react-icons/ri";
 
 interface PushProps {
@@ -125,164 +126,174 @@ const EnviarPush = () => {
     }
 
     return (
-        <div className="md:w-2/4 mx-auto bg-gray-50 rounded-b-md shadow">
-            <div className="flex items-center justify-start h-10 px-4 bg-blue-light text-white rounded-t-md">
-                <div className="mr-2">
-                    <IoNotifications size={20} />
+
+        <>
+        <div className="mt-1 absolute bg-blue-light text-gray-100 rounded-full w-6 h-6 flex items-center justify-center">
+        <Link
+        href="/ecommerce"
+        >
+        <IoArrowBack size={22} />
+        </Link>
+        </div>
+            <div className="md:w-2/4 mx-auto bg-gray-50 rounded-md shadow mt-4">
+                <div className="flex items-center justify-start h-10 px-4 bg-blue-light text-white rounded-t-md">
+                    <div className="mr-2">
+                        <IoNotifications size={20} />
+                    </div>
+                    <div>
+                        <h1 className="text-lg font-semibold">Envio de push</h1>
+                    </div>
                 </div>
-                <div>
-                    <h1 className="text-lg font-semibold">Envio de push</h1>
-                </div>
-            </div>
-            <div className="">
-                <form onSubmit={handleSubmit(submitPush)}>
-                    <div className="px-3">
-                        <div className="flex flex-col mt-6">
-                            <div className="flex items-center justify-start">
-                                <div
-                                    className={`flex items-center justify-center w-5 h-5 rounded-md cursor-pointer ${checked ? 'bg-blue-light text-white' : 'bg-white border border-gray-300'}`}
-                                    onClick={handleClientesAll}
-                                >
-                                    {checked ? <IoCheckmark size={22} /> : ''}
-                                </div>
-                                <div className="label-form ml-2">Disparar total da base de dados</div>
-                            </div>
-                            {loadingAll &&
-                                <div className="flex items-center justify-center fixed top-0 right-0 bottom-0 left-0 bg-gray-700 bg-opacity-50">
-                                    <div className="flex items-center justify-center bg-white p-6 rounded shadow-lg">
-                                        <div><RiLoader3Fill size={32} color={'#949494'} className="animate-spin" /></div>
-                                        <div className="text-xl text-gray-500">Aguarde buscando dados...</div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                        <div className="flex flex-col mt-4">
-                            <label className="label-form" htmlFor="codCli">
-                                Código do cliente
-                            </label>
-                            <div className="flex items-center justify-start gap-4">
+                <div className="">
+                    <form onSubmit={handleSubmit(submitPush)}>
+                        <div className="px-3">
+                            <div className="flex flex-col mt-6">
                                 <div className="flex items-center justify-start">
-                                    <input
-                                        className="input-form !border-r-0 !rounded-r-none"
-                                        type="text"
-                                        id="codCli"
-                                        {...register('codCli')}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={(e: any) => handleClienteCode(e)}
-                                        className="input-form !rounded-l-none"
+                                    <div
+                                        className={`flex items-center justify-center w-5 h-5 rounded-md cursor-pointer ${checked ? 'bg-blue-light text-white' : 'bg-white border border-gray-300'}`}
+                                        onClick={handleClientesAll}
                                     >
-                                        {loadingSearch ? <RiLoader3Fill size={24} color={'#949494'} className="animate-spin" /> : <IoSearch size={24} color={'#949494'} />}
-                                    </button>
+                                        {checked ? <IoCheckmark size={22} /> : ''}
+                                    </div>
+                                    <div className="label-form ml-2">Disparar total da base de dados</div>
                                 </div>
+                                {loadingAll &&
+                                    <div className="flex items-center justify-center fixed top-0 right-0 bottom-0 left-0 bg-gray-700 bg-opacity-50">
+                                        <div className="flex items-center justify-center bg-white p-6 rounded shadow-lg">
+                                            <div><RiLoader3Fill size={32} color={'#949494'} className="animate-spin" /></div>
+                                            <div className="text-xl text-gray-500">Aguarde buscando dados...</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div className="flex flex-col mt-4">
+                                <label className="label-form" htmlFor="codCli">
+                                    Código do cliente
+                                </label>
+                                <div className="flex items-center justify-start gap-4">
+                                    <div className="flex items-center justify-start">
+                                        <input
+                                            className="input-form !border-r-0 !rounded-r-none"
+                                            type="text"
+                                            id="codCli"
+                                            {...register('codCli')}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={(e: any) => handleClienteCode(e)}
+                                            className="input-form !rounded-l-none"
+                                        >
+                                            {loadingSearch ? <RiLoader3Fill size={24} color={'#949494'} className="animate-spin" /> : <IoSearch size={24} color={'#949494'} />}
+                                        </button>
+                                    </div>
+                                    <input
+                                        className="input-form w-full"
+                                        type="text"
+                                        id="namecli"
+                                        {...register('namecli')}
+                                        readOnly
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col mt-3">
+                                <label className="label-form" htmlFor="title">
+                                    Título push
+                                </label>
                                 <input
-                                    className="input-form w-full"
+                                    className="input-form"
                                     type="text"
-                                    id="namecli"
-                                    {...register('namecli')}
-                                    readOnly
+                                    {...register('title')}
                                 />
                             </div>
-                        </div>
 
-                        <div className="flex flex-col mt-3">
-                            <label className="label-form" htmlFor="title">
-                                Título push
-                            </label>
-                            <input
-                                className="input-form"
-                                type="text"
-                                {...register('title')}
-                            />
-                        </div>
-
-                        <div className="flex flex-col mt-3">
-                            <label className="label-form" htmlFor="body">
-                                Texto
-                            </label>
-                            <textarea
-                                className="input-form"
-                                {...register('body')}
-                            />
-                        </div>
-
-                        <div className="flex flex-col mt-3">
-                            <label className="label-form" htmlFor="image">
-                                URL da imagem
-                            </label>
-                            <input
-                                className="input-form"
-                                type="text"
-                                {...register('image')}
-                            />
-                        </div>
-
-                        <div className="flex flex-col mt-3">
-                            <label className="label-form" htmlFor="body">
-                                Tipo de push
-                            </label>
-                            <div className="flex items-center justify-start py-2">
-                                <div className="">
-                                    <input type="radio" id="link" value={'link'} {...register('pushType')} />
-                                    <label className="ml-1 text-base text-gray-500" htmlFor="openlink">Abertura de link</label>
-                                </div>
-                                <div className="ml-4">
-                                    <input type="radio" id="pesquisa" value={'pesquisa'} {...register('pushType')} />
-                                    <label className="ml-1 text-base text-gray-500" htmlFor="">Pesquisa de satisfação</label>
-                                </div>
-                                <div className="ml-4">
-                                    <input type="radio" id="aviso" value={'aviso'} {...register('pushType')} />
-                                    <label className="ml-1 text-base text-gray-500" htmlFor="aviso">Aviso</label>
-                                </div>
-
+                            <div className="flex flex-col mt-3">
+                                <label className="label-form" htmlFor="body">
+                                    Texto
+                                </label>
+                                <textarea
+                                    className="input-form"
+                                    {...register('body')}
+                                />
                             </div>
-                        </div>
 
-                        <div className="flex flex-col mt-3">
-                            <label className="label-form" htmlFor="pesquisa">
-                                Pesquisa
-                            </label>
-                            <input
-                                className="input-form"
-                                type="text"
-                                {...register('pesquisa')}
-                            />
-                        </div>
+                            <div className="flex flex-col mt-3">
+                                <label className="label-form" htmlFor="image">
+                                    URL da imagem
+                                </label>
+                                <input
+                                    className="input-form"
+                                    type="text"
+                                    {...register('image')}
+                                />
+                            </div>
 
-                        <div className="flex flex-col mt-3">
-                            <label className="label-form" htmlFor="url">
-                                Link web
-                            </label>
-                            <input
-                                type="text"
-                                className="input-form"
-                                {...register('url')}
-                            />
-                        </div>
+                            <div className="flex flex-col mt-3">
+                                <label className="label-form" htmlFor="body">
+                                    Tipo de push
+                                </label>
+                                <div className="flex items-center justify-start py-2">
+                                    <div className="">
+                                        <input type="radio" id="link" value={'link'} {...register('pushType')} />
+                                        <label className="ml-1 text-base text-gray-500" htmlFor="openlink">Abertura de link</label>
+                                    </div>
+                                    <div className="ml-4">
+                                        <input type="radio" id="pesquisa" value={'pesquisa'} {...register('pushType')} />
+                                        <label className="ml-1 text-base text-gray-500" htmlFor="">Pesquisa de satisfação</label>
+                                    </div>
+                                    <div className="ml-4">
+                                        <input type="radio" id="aviso" value={'aviso'} {...register('pushType')} />
+                                        <label className="ml-1 text-base text-gray-500" htmlFor="aviso">Aviso</label>
+                                    </div>
 
-                        <div className="flex flex-col mt-3">
-                            <label className="label-form" htmlFor="token">
-                                Token do celular
-                            </label>
-                            <textarea
-                                className="input-form"
-                                {...register('token')}
-                                required
-                            />
-                        </div>
+                                </div>
+                            </div>
 
-                    </div>
-                    <div className="bg-white rounded-b-md border-t mt-4 p-3 flex items-center justify-end">
-                        <button
-                            className="btn-save"
-                        >
-                            {loading ? <RiLoader3Fill size={24} color={'#f3f3f3'} className="animate-spin" /> : 'Enviar push'}
-                        </button>
-                    </div>
-                </form>
+                            <div className="flex flex-col mt-3">
+                                <label className="label-form" htmlFor="pesquisa">
+                                    Pesquisa
+                                </label>
+                                <input
+                                    className="input-form"
+                                    type="text"
+                                    {...register('pesquisa')}
+                                />
+                            </div>
+
+                            <div className="flex flex-col mt-3">
+                                <label className="label-form" htmlFor="url">
+                                    Link web
+                                </label>
+                                <input
+                                    type="text"
+                                    className="input-form"
+                                    {...register('url')}
+                                />
+                            </div>
+
+                            <div className="flex flex-col mt-3">
+                                <label className="label-form" htmlFor="token">
+                                    Token do celular
+                                </label>
+                                <textarea
+                                    className="input-form"
+                                    {...register('token')}
+                                    required
+                                />
+                            </div>
+
+                        </div>
+                        <div className="bg-white rounded-b-md border-t mt-4 p-3 flex items-center justify-end">
+                            <button
+                                className="btn-save"
+                            >
+                                {loading ? <RiLoader3Fill size={24} color={'#f3f3f3'} className="animate-spin" /> : 'Enviar push'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 
