@@ -130,7 +130,7 @@ const EnviarPush = () => {
         <>
         <div className="mt-1 absolute bg-blue-light text-gray-100 rounded-full w-6 h-6 flex items-center justify-center">
         <Link
-        href="/ecommerce"
+        href="ecommerce"
         >
         <IoArrowBack size={22} />
         </Link>
