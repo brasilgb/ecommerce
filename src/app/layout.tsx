@@ -25,9 +25,8 @@ export default function RootLayout({
   const pathname = usePathname();
   const isPublicPage = checkIsPublicRoute(pathname!);
 
-  // const userUrlCheck = checkUserUrlAccess(pathname);
-  // console.log('userUrlCheck', userUrlCheck === true ? 'true' : 'false');
-  // console.log('pathname', pathname.replace('/', ''));
+  const userUrlCheck = checkUserUrlAccess();
+  console.log('userUrlCheck', userUrlCheck);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -37,16 +36,16 @@ export default function RootLayout({
       <body className={`${roboto.variable}`}>
         <div className="flex min-h-screen flex-col items-center justify-center bg-gray-dark">
           <AuthProvider>
-            {/* {isPublicPage && children}
+            {isPublicPage && children}
             {!isPublicPage && (
-              <PrivateRoute> */}
+              <PrivateRoute>
                 <Header />
                 <div className="flex-grow pb-4 w-full px-4">
                   {children}
                 </div>
                 <Footer />
-              {/* </PrivateRoute>
-            )} */}
+              </PrivateRoute>
+            )}
           </AuthProvider>
         </div>
       </body>
