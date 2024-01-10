@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IoArrowBack, IoCheckmark, IoNotifications, IoSearch } from "react-icons/io5";
+import { IoAlertCircle, IoArrowBack, IoCheckmark, IoCheckmarkCircle, IoNotifications, IoSearch } from "react-icons/io5";
 import { RiLoader3Fill } from "react-icons/ri";
 
 interface PushProps {
@@ -37,8 +37,10 @@ const EnviarPush = () => {
     const [loadingAll, setLoadingAll] = useState<boolean>(false);
     const [loadingSearch, setLoadingSearch] = useState<boolean>(false);
     const [checked, setChecked] = useState<boolean>(false);
+    const [pushEnviado, setPushEnviado] = useState<string>('');
+    const [pushStatus, setPushStatus] = useState<boolean>(false);
 
-    const { register, handleSubmit, formState: { errors }, getValues, setValue, watch } = useForm<FormData>({
+    const { register, handleSubmit, formState: { errors }, getValues, setValue, reset } = useForm<FormData>({
         defaultValues: {
             allCli: "",
             codCli: "",
@@ -52,13 +54,6 @@ const EnviarPush = () => {
         mode: 'onBlur',
         resolver: zodResolver(schema),
     });
-
-    // useEffect(() => {
-    //     let codcl = document.formPush.codCli.value;
-    //     let namcl = document.formPush.nameCli.value;;
-    //     console.log(codcl, namcl);
-
-    // }, []);
 
     const handleClienteCode = async (e: any) => {
         e.preventDefault();
@@ -133,9 +128,12 @@ const EnviarPush = () => {
             setLoading(false);
             const { success, failure, results }: any = await response.json();
             if (success === 1 && failure === 0) {
-                console.log("Mensagens enviadas com successo");
+                setPushEnviado("Mensagens enviadas com successo");
+                setPushStatus(true);
+                reset({});
             } else {
-                console.log("Erro ao enviar mensagens", results);
+                setPushEnviado(`Erro ao enviar mensagem: ${results[0].error}`);
+                setPushStatus(false);
             }
 
         } catch (error) {
@@ -144,6 +142,10 @@ const EnviarPush = () => {
         }
     }
 
+    useEffect(() => {
+        const path = window.location.pathname;
+        console.log('apos url principal = ', path.split('/')[1]);
+    },[])
     return (
 
         <>
@@ -164,6 +166,12 @@ const EnviarPush = () => {
                     </div>
                 </div>
                 <div className="">
+                    {pushEnviado &&
+                        <div className={`py-4 flex items-center justify-start pl-5 ${pushStatus ? 'bg-green-200 border-b border-b-green-300' : 'bg-red-300 border-b border-b-red-400'}`}>
+                            {pushStatus ? <IoCheckmarkCircle size={22} className="text-green-700" /> : <IoAlertCircle size={22} className="text-red-700" />}
+                            <h1 className={`text-lg ml-8 ${pushStatus ? 'text-green-700' : 'text-red-700'}`}>{pushEnviado}</h1>
+                        </div>
+                    }
                     <form name="formPush" onSubmit={handleSubmit(submitPush)}>
                         <div className="px-3">
                             <div className="flex flex-col mt-6">
