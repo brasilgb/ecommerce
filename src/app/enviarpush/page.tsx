@@ -3,105 +3,119 @@ import servicepush from "@/services/servicepush";
 import Link from "next/link";
 import React, { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
-import { IoArrowBack, IoCheckbox, IoCheckmark, IoNotifications, IoSearch } from "react-icons/io5";
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { IoArrowBack, IoCheckmark, IoNotifications, IoSearch } from "react-icons/io5";
 import { RiLoader3Fill } from "react-icons/ri";
 
 interface PushProps {
     allCli: boolean;
     codCli: string;
-    namecli: string;
+    nameCli: string;
     title: string;
     body: string;
-    pushType: string;
-    pesquisa: string;
     url: string;
     image: string;
     token: string;
-    emoji: string;
 }
+
+const schema = z.object({
+    allCli: z.string().optional(),
+    codCli: z.string().optional(),
+    nameCli: z.string(),
+    title: z.string().min(1, 'O título não deve estar vazio.'),
+    body: z.string().min(1, 'O corpo da mensagem não deve estar vazio.'),
+    url: z.string(),
+    image: z.string(),
+    token: z.string().min(1, 'Digite o codigo do cliente ou marque a opção disparar total da base de dados'),
+});
+
+type FormData = z.infer<typeof schema>;
+
 const EnviarPush = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingAll, setLoadingAll] = useState<boolean>(false);
     const [loadingSearch, setLoadingSearch] = useState<boolean>(false);
     const [checked, setChecked] = useState<boolean>(false);
-    const [allTokens, setAllTokens] = useState<any>([]);
 
-    const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm<PushProps>({
+    const { register, handleSubmit, formState: { errors }, getValues, setValue, watch } = useForm<FormData>({
         defaultValues: {
-            allCli: false,
+            allCli: "",
             codCli: "",
-            namecli: "",
+            nameCli: "",
             title: "",
             body: "",
-            pushType: "",
-            pesquisa: "",
             url: "",
             image: "",
             token: ""
         },
         mode: 'onBlur',
+        resolver: zodResolver(schema),
     });
+
+    // useEffect(() => {
+    //     let codcl = document.formPush.codCli.value;
+    //     let namcl = document.formPush.nameCli.value;;
+    //     console.log(codcl, namcl);
+
+    // }, []);
 
     const handleClienteCode = async (e: any) => {
         e.preventDefault();
         setLoadingSearch(true);
         let cod = getValues('codCli');
+        await servicepush.post(`(WS_CLIENTES_NOTIFY)`,
+            {
+                code: cod
+            })
+            .then((result) => {
+                const { token, name } = result.data.response.customers[0];
+                setValue('nameCli', name);
+                setValue('token', token);
+                setLoadingSearch(false);
+            })
+            .catch((err) => {
+                setLoadingSearch(false);
+                console.log(err);
+            })
 
-        if (cod) {
-            await servicepush.post(`(WS_CLIENTES_NOTIFY)`,
-                {
-                    code: `${cod}`
-                })
-                .then((result) => {
-                    setLoadingSearch(false);
-                    const { token, name } = result.data.response.customers[0];
-                    setValue('namecli', name);
-                    setValue('token', token);
-                })
-                .catch((err) => {
-                    setLoadingSearch(false);
-                    console.log(err);
-                })
-        } else {
-            setLoadingSearch(false);
-        }
     }
 
     const handleClientesAll = async (e: any) => {
         setChecked(!checked);
         if (!checked) {
+            setValue('codCli', '');
+            setValue('nameCli', 'Todos os clientes');
             setLoadingAll(true);
             await servicepush.post(`(WS_CLIENTES_NOTIFY)`, { code: "" })
                 .then((result) => {
                     setLoadingAll(false);
-                    setValue('namecli', 'Todos os clientes');
                     const datatk = result.data.response.customers;
                     const gertoken = datatk.map((tk: any) => (tk.token));
                     setValue('token', JSON.stringify(gertoken));
-                    setAllTokens(gertoken);
                 })
                 .catch((err) => {
                     setLoadingAll(false);
                     console.log(err);
                 })
         } else {
-            setValue('namecli', '');
+            setValue('codCli', '');
+            setValue('nameCli', '');
             setValue('token', '');
-            setAllTokens([]);
         }
     };
 
     const submitPush = async (data: any) => {
         setLoading(true);
         const firebase_api_key = "AAAAM-_KeU4:APA91bGUHCmXD9jH7wkxPM1-6gZqR06jRJ6NyyVNBlbJW1TugXpKqKKY4Cxub92kqC-TmohGYyOaze63Dsb7AGxvNPC5QRK-IBu7crQ2ujMbslBTSdXEN4uVsHTdxWL2b8yYyboKrNGe"
-        const datafcm = JSON.stringify(data.token);
+        // const datafcm = JSON.stringify(data.token);
         const message = {
             "to": data.token,
             "data": {
                 "title": `${data.title}`,
                 "body": `${data.body}`,
-                "url": `${data.url}`,
-                "image": `${data.image}`
+                "url": `${data.url ? data.url : '#'}`,
+                "image": `${data.image ? data.image : '#'}`
             },
             "contentAvailable": true,
             "priority": "high"
@@ -117,8 +131,13 @@ const EnviarPush = () => {
                 body: JSON.stringify(message),
             });
             setLoading(false);
-            const result = await response.json();
-            console.log("Success:", result);
+            const { success, failure, results }: any = await response.json();
+            if (success === 1 && failure === 0) {
+                console.log("Mensagens enviadas com successo");
+            } else {
+                console.log("Erro ao enviar mensagens", results);
+            }
+
         } catch (error) {
             setLoading(false);
             console.error("Error:", error);
@@ -128,13 +147,13 @@ const EnviarPush = () => {
     return (
 
         <>
-        <div className="mt-1 absolute bg-blue-light text-gray-100 rounded-full w-6 h-6 flex items-center justify-center">
-        <Link
-        href="http://portal.gruposolar.com.br/ecommerce"
-        >
-        <IoArrowBack size={22} />
-        </Link>
-        </div>
+            <div className="mt-1 absolute bg-blue-light text-gray-100 rounded-full w-6 h-6 flex items-center justify-center">
+                <Link
+                    href="http://portal.gruposolar.com.br/ecommerce"
+                >
+                    <IoArrowBack size={22} />
+                </Link>
+            </div>
             <div className="md:w-2/4 mx-auto bg-gray-50 rounded-md shadow mt-4">
                 <div className="flex items-center justify-start h-10 px-4 bg-blue-light text-white rounded-t-md">
                     <div className="mr-2">
@@ -145,7 +164,7 @@ const EnviarPush = () => {
                     </div>
                 </div>
                 <div className="">
-                    <form onSubmit={handleSubmit(submitPush)}>
+                    <form name="formPush" onSubmit={handleSubmit(submitPush)}>
                         <div className="px-3">
                             <div className="flex flex-col mt-6">
                                 <div className="flex items-center justify-start">
@@ -189,8 +208,8 @@ const EnviarPush = () => {
                                     <input
                                         className="input-form w-full"
                                         type="text"
-                                        id="namecli"
-                                        {...register('namecli')}
+                                        id="nameCli"
+                                        {...register('nameCli')}
                                         readOnly
                                     />
                                 </div>
@@ -205,6 +224,11 @@ const EnviarPush = () => {
                                     type="text"
                                     {...register('title')}
                                 />
+                                {errors.title?.message && (
+                                    <div className="text-sm text-red-600">
+                                        {errors.title?.message}
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex flex-col mt-3">
@@ -215,6 +239,11 @@ const EnviarPush = () => {
                                     className="input-form"
                                     {...register('body')}
                                 />
+                                {errors.body?.message && (
+                                    <div className="text-sm text-red-600">
+                                        {errors.body?.message}
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex flex-col mt-3">
@@ -228,7 +257,7 @@ const EnviarPush = () => {
                                 />
                             </div>
 
-                            <div className="flex flex-col mt-3">
+                            {/* <div className="flex flex-col mt-3">
                                 <label className="label-form" htmlFor="body">
                                     Tipo de push
                                 </label>
@@ -247,9 +276,9 @@ const EnviarPush = () => {
                                     </div>
 
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div className="flex flex-col mt-3">
+                            {/* <div className="flex flex-col mt-3">
                                 <label className="label-form" htmlFor="pesquisa">
                                     Pesquisa
                                 </label>
@@ -258,7 +287,7 @@ const EnviarPush = () => {
                                     type="text"
                                     {...register('pesquisa')}
                                 />
-                            </div>
+                            </div> */}
 
                             <div className="flex flex-col mt-3">
                                 <label className="label-form" htmlFor="url">
@@ -278,10 +307,14 @@ const EnviarPush = () => {
                                 <textarea
                                     className="input-form"
                                     {...register('token')}
-                                    required
+                                    readOnly
                                 />
                             </div>
-
+                            {errors.token?.message && (
+                                <div className="text-sm text-red-600">
+                                    {errors.token?.message}
+                                </div>
+                            )}
                         </div>
                         <div className="bg-white rounded-b-md border-t mt-4 p-3 flex items-center justify-end">
                             <button
