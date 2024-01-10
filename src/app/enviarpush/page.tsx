@@ -1,12 +1,13 @@
 'use client'
 import servicepush from "@/services/servicepush";
 import Link from "next/link";
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useForm } from "react-hook-form";
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IoAlertCircle, IoArrowBack, IoCheckmark, IoCheckmarkCircle, IoNotifications, IoSearch } from "react-icons/io5";
 import { RiLoader3Fill } from "react-icons/ri";
+import { checkUserUrlAccess } from "@/functions/check-user-url-access";
 
 interface PushProps {
     allCli: boolean;
@@ -39,7 +40,7 @@ const EnviarPush = () => {
     const [checked, setChecked] = useState<boolean>(false);
     const [pushEnviado, setPushEnviado] = useState<string>('');
     const [pushStatus, setPushStatus] = useState<boolean>(false);
-
+    console.log(checkUserUrlAccess());
     const { register, handleSubmit, formState: { errors }, getValues, setValue, reset } = useForm<FormData>({
         defaultValues: {
             allCli: "",
@@ -142,12 +143,7 @@ const EnviarPush = () => {
         }
     }
 
-    useEffect(() => {
-        const path = window.location.pathname;
-        console.log('apos url principal = ', path.split('/')[1]);
-    },[])
     return (
-
         <>
             <div className="mt-1 absolute bg-blue-light text-gray-100 rounded-full w-6 h-6 flex items-center justify-center">
                 <Link

@@ -1,8 +1,13 @@
 import LinkApp from "@/components/linkapp";
+import { checkUserUrlAccess } from "@/functions/check-user-url-access";
 
 export default function Home() {
+  console.log(checkUserUrlAccess());
   return (
     <main>
+      <head>
+        <title>Ecommerce - Portal Grupo Solar</title>
+      </head>
       <div className="flex justify-center py-6">
         <h1 className="text-3xl font-semibold text-gray-600">Bem vindo ao módulo E-commerce</h1>
       </div>

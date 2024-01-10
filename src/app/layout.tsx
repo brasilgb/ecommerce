@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { checkIsPublicRoute } from "@/functions/check-is-public-route";
 import PrivateRoute from "@/components/privateroute";
 import { checkUserUrlAccess } from "@/functions/check-user-url-access";
+import { Metadata } from "next";
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -30,19 +31,22 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <title>Envio de Push - Portal Grupo Solar</title>
+      </head>
       <body className={`${roboto.variable}`}>
         <div className="flex min-h-screen flex-col items-center justify-center bg-gray-dark">
           <AuthProvider>
-            {isPublicPage && children}
+            {/* {isPublicPage && children}
             {!isPublicPage && (
-              <PrivateRoute>
+              <PrivateRoute> */}
                 <Header />
                 <div className="flex-grow pb-4 w-full px-4">
                   {children}
                 </div>
                 <Footer />
-              </PrivateRoute>
-            )}
+              {/* </PrivateRoute>
+            )} */}
           </AuthProvider>
         </div>
       </body>
