@@ -33,16 +33,16 @@ export default function RootLayout({
       <body className={`${roboto.variable}`}>
         <div className="flex min-h-screen flex-col items-center justify-center bg-gray-dark">
           <AuthProvider>
-            {/* {isPublicPage && children}
+            {isPublicPage && children}
             {!isPublicPage && (
-              <PrivateRoute> */}
+              <PrivateRoute>
                 <Header />
                 <div className="flex-grow pb-4 w-full px-4">
                   {children}
                 </div>
                 <Footer />
-              {/* </PrivateRoute>
-            )} */}
+              </PrivateRoute>
+            )}
           </AuthProvider>
         </div>
       </body>
