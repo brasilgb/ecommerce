@@ -12,7 +12,7 @@ interface LinkProps {
 const LinkApp = ({ bgColor, text, textColor, title, titleColor, url }: LinkProps) => {
     return (
         <Link
-            className={`${bgColor} p-4 rounded shadow border-2 border-white`}
+            className={`${bgColor} p-4 rounded shadow border-2 border-white hover:shadow-md`}
             href={url}
         >
             <h1 className={`${titleColor} text-xl uppercase text-center font-semibold mb-2`}>{title}</h1>

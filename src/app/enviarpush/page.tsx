@@ -205,10 +205,10 @@ const EnviarPush = () => {
                                 <label className="label-form" htmlFor="codCli">
                                     Código do cliente
                                 </label>
-                                <div className="flex items-center justify-start gap-4">
+                                <div className="md:flex items-center justify-start gap-4">
                                     <div className="flex items-center justify-start">
                                         <input
-                                            className="input-form !border-r-0 !rounded-r-none"
+                                            className="input-form !border-r-0 !rounded-r-none w-full"
                                             type="text"
                                             id="codCli"
                                             {...register('codCli')}
@@ -224,7 +224,7 @@ const EnviarPush = () => {
                                         </button>
                                     </div>
                                     <input
-                                        className="input-form w-full"
+                                        className="input-form w-full md:mt-0 mt-4"
                                         type="text"
                                         id="nameCli"
                                         {...register('nameCli')}
