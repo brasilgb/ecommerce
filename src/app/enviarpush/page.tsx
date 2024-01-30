@@ -1,13 +1,12 @@
 'use client'
 import servicepush from "@/services/servicepush";
 import Link from "next/link";
-import React, { useState } from 'react'
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from 'react'
+import { Controller, useForm } from "react-hook-form";
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IoAlertCircle, IoArrowBack, IoCheckmark, IoCheckmarkCircle, IoNotifications, IoSearch } from "react-icons/io5";
 import { RiLoader3Fill } from "react-icons/ri";
-import { checkUserUrlAccess } from "@/functions/check-user-url-access";
 
 interface PushProps {
     allCli: boolean;
@@ -40,7 +39,8 @@ const EnviarPush = () => {
     const [checked, setChecked] = useState<boolean>(false);
     const [pushEnviado, setPushEnviado] = useState<string>('');
     const [pushStatus, setPushStatus] = useState<boolean>(false);
-    console.log(checkUserUrlAccess());
+    const [allTokens, setAllTokens] = useState<any>([]);
+
     const { register, handleSubmit, formState: { errors }, getValues, setValue, reset } = useForm<FormData>({
         defaultValues: {
             allCli: "",
@@ -65,48 +65,56 @@ const EnviarPush = () => {
                 code: cod
             })
             .then((result) => {
-                const { token, name } = result.data.response.customers[0];
+                const datatk = result.data.response.customers;
+                const token = datatk.map((tk: any) => (tk.token));
+                const name = datatk.map((tk: any) => (tk.name));
                 setValue('nameCli', name);
-                setValue('token', token);
+                setValue('token', JSON.stringify(token));
+                setAllTokens(token);
                 setLoadingSearch(false);
             })
             .catch((err) => {
                 setLoadingSearch(false);
                 console.log(err);
             })
-
     }
 
-    const handleClientesAll = async (e: any) => {
-        setChecked(!checked);
-        if (!checked) {
-            setValue('codCli', '');
-            setValue('nameCli', 'Todos os clientes');
-            setLoadingAll(true);
-            await servicepush.post(`(WS_CLIENTES_NOTIFY)`, { code: "" })
-                .then((result) => {
-                    setLoadingAll(false);
-                    const datatk = result.data.response.customers;
-                    const gertoken = datatk.map((tk: any) => (tk.token));
-                    setValue('token', JSON.stringify(gertoken));
-                })
-                .catch((err) => {
-                    setLoadingAll(false);
-                    console.log(err);
-                })
-        } else {
-            setValue('codCli', '');
-            setValue('nameCli', '');
-            setValue('token', '');
-        }
-    };
+    const handleChange = () => {
+        setChecked(state => !state)
+    }
+
+    useEffect(() => {
+        const handleClientAll = async () => {
+            if (checked) {
+                setValue('codCli', '');
+                setValue('nameCli', 'Todos os clientes');
+                setLoadingAll(true);
+                await servicepush.post(`(WS_CLIENTES_NOTIFY)`, { code: "" })
+                    .then((result) => {
+                        setLoadingAll(false);
+                        const datatk = result.data.response.customers;
+                        const gertoken = datatk.filter((f: any) => (f.version === '131')).map((tk: any) => (tk.token));
+                        setValue('token', JSON.stringify(gertoken));
+                        setAllTokens(gertoken);
+                    })
+                    .catch((err) => {
+                        setLoadingAll(false);
+                        console.log(err);
+                    })
+            } else {
+                setValue('codCli', '');
+                setValue('nameCli', '');
+                setValue('token', '');
+            }
+        };
+        handleClientAll();
+    }, [checked]);
 
     const submitPush = async (data: any) => {
         setLoading(true);
         const firebase_api_key = "AAAAM-_KeU4:APA91bGUHCmXD9jH7wkxPM1-6gZqR06jRJ6NyyVNBlbJW1TugXpKqKKY4Cxub92kqC-TmohGYyOaze63Dsb7AGxvNPC5QRK-IBu7crQ2ujMbslBTSdXEN4uVsHTdxWL2b8yYyboKrNGe"
-        // const datafcm = JSON.stringify(data.token);
         const message = {
-            "to": data.token,
+            "registration_ids": allTokens,
             "data": {
                 "title": `${data.title}`,
                 "body": `${data.body}`,
@@ -116,6 +124,7 @@ const EnviarPush = () => {
             "contentAvailable": true,
             "priority": "high"
         }
+
         let headers = {
             "Authorization": `key=${firebase_api_key}`,
             "Content-Type": "application/json",
@@ -127,14 +136,17 @@ const EnviarPush = () => {
                 body: JSON.stringify(message),
             });
             setLoading(false);
+
             const { success, failure, results }: any = await response.json();
+            console.log(success, failure, results);
+
             if (success === 1 && failure === 0) {
-                setPushEnviado("Mensagens enviadas com successo");
+                setPushEnviado(`Envio de mensagem: Successo(${success}), Falha(${failure})`);
                 setPushStatus(true);
                 reset({});
             } else {
-                setPushEnviado(`Erro ao enviar mensagem: ${results[0].error}`);
-                setPushStatus(false);
+                setPushEnviado(`Envio de mensagem: Successo(${success}), Falha(${failure})`);
+                setPushStatus(failure > 0 ? false : true);
             }
 
         } catch (error) {
@@ -142,23 +154,22 @@ const EnviarPush = () => {
             console.error("Error:", error);
         }
     }
-
     return (
         <>
-            <div className="mt-1 absolute bg-blue-light text-gray-100 rounded-full w-6 h-6 flex items-center justify-center">
-                <Link
-                    href="http://portal.gruposolar.com.br/ecommerce"
-                >
-                    <IoArrowBack size={22} />
-                </Link>
-            </div>
             <div className="md:w-2/4 mx-auto bg-gray-50 rounded-md shadow mt-4">
-                <div className="flex items-center justify-start h-10 px-4 bg-blue-light text-white rounded-t-md">
-                    <div className="mr-2">
+                <div className="flex items-center justify-start bg-blue-light">
+                    <div className=" text-gray-50 rounded-full w-6 h-6 flex items-center justify-center mx-2">
+                        <Link
+                            href="http://portal.gruposolar.com.br/ecommerce"
+                        >
+                            <IoArrowBack size={22} />
+                        </Link>
+                    </div>
+                    <div className="mr-2 text-white">
                         <IoNotifications size={20} />
                     </div>
                     <div>
-                        <h1 className="text-lg font-semibold">Envio de push</h1>
+                        <h1 className="text-lg text-white font-semibold">Envio de push</h1>
                     </div>
                 </div>
                 <div className="">
@@ -172,14 +183,15 @@ const EnviarPush = () => {
                         <div className="px-3">
                             <div className="flex flex-col mt-6">
                                 <div className="flex items-center justify-start">
-                                    <div
-                                        className={`flex items-center justify-center w-5 h-5 rounded-md cursor-pointer ${checked ? 'bg-blue-light text-white' : 'bg-white border border-gray-300'}`}
-                                        onClick={handleClientesAll}
-                                    >
-                                        {checked ? <IoCheckmark size={22} /> : ''}
-                                    </div>
-                                    <div className="label-form ml-2">Disparar total da base de dados</div>
+                                    <input
+                                        type="checkbox"
+                                        name="allCli"
+                                        defaultChecked={false}
+                                        onChange={handleChange}
+                                    />
+                                    <label className="label-form ml-2">Disparar todos os clientes</label>
                                 </div>
+
                                 {loadingAll &&
                                     <div className="flex items-center justify-center fixed top-0 right-0 bottom-0 left-0 bg-gray-700 bg-opacity-50">
                                         <div className="flex items-center justify-center bg-white p-6 rounded shadow-lg">
@@ -200,10 +212,12 @@ const EnviarPush = () => {
                                             type="text"
                                             id="codCli"
                                             {...register('codCli')}
+                                            disabled={checked ? true : false}
                                         />
                                         <button
                                             type="button"
                                             onClick={(e: any) => handleClienteCode(e)}
+                                            disabled={checked ? true : false}
                                             className="input-form !rounded-l-none"
                                         >
                                             {loadingSearch ? <RiLoader3Fill size={24} color={'#949494'} className="animate-spin" /> : <IoSearch size={24} color={'#949494'} />}
