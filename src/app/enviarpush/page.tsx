@@ -108,7 +108,7 @@ const EnviarPush = () => {
             }
         };
         handleClientAll();
-    }, [checked]);
+    }, [checked, setValue]);
 
     const submitPush = async (data: any) => {
         setLoading(true);
