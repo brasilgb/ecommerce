@@ -40,6 +40,9 @@ const EnviarPush = () => {
     const [pushEnviado, setPushEnviado] = useState<string>('');
     const [pushStatus, setPushStatus] = useState<boolean>(false);
     const [allTokens, setAllTokens] = useState<any>([]);
+    const [customerError, setCustomerError] = useState<any>(null);
+    const [customersFound, setCustomersFound] = useState<any>(null);
+    const [valueCustomerCod, setValueCustomerCod] = useState<string>('');
 
     const { register, handleSubmit, formState: { errors }, getValues, setValue, reset } = useForm<FormData>({
         defaultValues: {
@@ -59,19 +62,25 @@ const EnviarPush = () => {
     const handleClienteCode = async (e: any) => {
         e.preventDefault();
         setLoadingSearch(true);
-        let cod = getValues('codCli');
         await servicepush.post(`(WS_CLIENTES_NOTIFY)`,
             {
-                code: cod
+                code: valueCustomerCod
             })
             .then((result) => {
-                const datatk = result.data.response.customers;
-                const token = datatk.map((tk: any) => (tk.token));
-                const name = datatk.map((tk: any) => (tk.name));
-                setValue('nameCli', name);
-                setValue('token', JSON.stringify(token));
-                setAllTokens(token);
-                setLoadingSearch(false);
+                const { success, customers } = result.data.response;
+                if (success) {
+                    const token = customers.map((tk: any) => (tk.token));
+                    const name = customers.map((tk: any) => (tk.name));
+                    setValue('nameCli', name);
+                    setValue('token', JSON.stringify(token));
+                    setAllTokens(token);
+                    setLoadingSearch(false);
+                    setCustomerError(null)
+                } else {
+                    setCustomerError("Cliente não existe na base de dados, tente sem o último dígito.");
+                    setLoadingSearch(false);
+                    setValue('token', '');
+                }
             })
             .catch((err) => {
                 setLoadingSearch(false);
@@ -93,15 +102,17 @@ const EnviarPush = () => {
                     .then((result) => {
                         setLoadingAll(false);
                         const datatk = result.data.response.customers;
-                        const gertoken = datatk.filter((f: any) => (f.version === '131')).map((tk: any) => (tk.token));
+                        const gertoken = datatk.map((tk: any) => (tk.token));
                         setValue('token', JSON.stringify(gertoken));
                         setAllTokens(gertoken);
+                        setCustomersFound(`Encontrados ${datatk.length} clientes para o envio de notificações.`);
                     })
                     .catch((err) => {
                         setLoadingAll(false);
                         console.log(err);
                     })
             } else {
+                setCustomersFound(null);
                 setValue('codCli', '');
                 setValue('nameCli', '');
                 setValue('token', '');
@@ -154,15 +165,20 @@ const EnviarPush = () => {
             console.error("Error:", error);
         }
     }
+
+    const handleChangeCod = (e: any) => {
+        setValueCustomerCod(e.target.value);
+    };
+
     return (
         <>
-            <div className="md:w-2/4 mx-auto bg-gray-50 rounded-md shadow mt-4">
-                <div className="flex items-center justify-start bg-blue-light">
-                    <div className=" text-gray-50 rounded-full w-6 h-6 flex items-center justify-center mx-2">
+            <div className="md:w-2/4 mx-auto bg-gray-50 rounded-md shadow mt-4 border border-white">
+                <div className="relative flex items-center justify-start bg-blue-light px-3 py-2 rounded-t-md">
+                    <div className="absolute bg-white hover:bg-gray-50 -left-10 text-blue-light rounded-l-full w-8 h-8 flex items-center justify-center mx-2 shadow">
                         <Link
                             href="http://portal.gruposolar.com.br/ecommerce"
                         >
-                            <IoArrowBack size={22} />
+                            <IoArrowBack size={20} />
                         </Link>
                     </div>
                     <div className="mr-2 text-white">
@@ -189,14 +205,18 @@ const EnviarPush = () => {
                                         defaultChecked={false}
                                         onChange={handleChange}
                                     />
-                                    <label className="label-form ml-2">Disparar todos os clientes</label>
+                                    <label className="label-form ml-2">Disparar para todos os clientes</label>
                                 </div>
-
+                                {customersFound && (
+                                    <div className="text-sm text-blue-light">
+                                        {customersFound}
+                                    </div>
+                                )}
                                 {loadingAll &&
                                     <div className="flex items-center justify-center fixed top-0 right-0 bottom-0 left-0 bg-gray-700 bg-opacity-50">
                                         <div className="flex items-center justify-center bg-white p-6 rounded shadow-lg">
                                             <div><RiLoader3Fill size={32} color={'#949494'} className="animate-spin" /></div>
-                                            <div className="text-xl text-gray-500">Aguarde buscando dados...</div>
+                                            <div className="text-xl text-gray-500">Aguarde buscando clientes...</div>
                                         </div>
                                     </div>
                                 }
@@ -208,34 +228,39 @@ const EnviarPush = () => {
                                 <div className="md:flex items-center justify-start gap-4">
                                     <div className="flex items-center justify-start">
                                         <input
-                                            className="input-form !border-r-0 !rounded-r-none w-full"
+                                            className={`input-form !border-r-0 !rounded-r-none w-full ${checked ? 'bg-gray-200' : ''}`}
                                             type="text"
                                             id="codCli"
-                                            {...register('codCli')}
+                                            onChange={handleChangeCod}
                                             disabled={checked ? true : false}
                                         />
                                         <button
                                             type="button"
                                             onClick={(e: any) => handleClienteCode(e)}
-                                            disabled={checked ? true : false}
-                                            className="input-form !rounded-l-none"
+                                            disabled={checked || valueCustomerCod === "" ? true : false}
+                                            className={`input-form !rounded-l-none ${checked || valueCustomerCod === "" ? 'bg-gray-200' : ''}`}
                                         >
                                             {loadingSearch ? <RiLoader3Fill size={24} color={'#949494'} className="animate-spin" /> : <IoSearch size={24} color={'#949494'} />}
                                         </button>
                                     </div>
                                     <input
-                                        className="input-form w-full md:mt-0 mt-4"
+                                        className={`input-form w-full md:mt-0 mt-4 ${checked ? 'bg-gray-200' : ''}`}
                                         type="text"
                                         id="nameCli"
                                         {...register('nameCli')}
                                         readOnly
                                     />
                                 </div>
+                                {customerError && (
+                                    <div className="text-sm text-red-600">
+                                        {customerError}
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex flex-col mt-3">
                                 <label className="label-form" htmlFor="title">
-                                    Título push
+                                    Título da mensagem
                                 </label>
                                 <input
                                     className="input-form"
@@ -251,7 +276,7 @@ const EnviarPush = () => {
 
                             <div className="flex flex-col mt-3">
                                 <label className="label-form" htmlFor="body">
-                                    Texto
+                                    Texto da mensagem
                                 </label>
                                 <textarea
                                     className="input-form"
@@ -275,38 +300,6 @@ const EnviarPush = () => {
                                 />
                             </div>
 
-                            {/* <div className="flex flex-col mt-3">
-                                <label className="label-form" htmlFor="body">
-                                    Tipo de push
-                                </label>
-                                <div className="flex items-center justify-start py-2">
-                                    <div className="">
-                                        <input type="radio" id="link" value={'link'} {...register('pushType')} />
-                                        <label className="ml-1 text-base text-gray-500" htmlFor="openlink">Abertura de link</label>
-                                    </div>
-                                    <div className="ml-4">
-                                        <input type="radio" id="pesquisa" value={'pesquisa'} {...register('pushType')} />
-                                        <label className="ml-1 text-base text-gray-500" htmlFor="">Pesquisa de satisfação</label>
-                                    </div>
-                                    <div className="ml-4">
-                                        <input type="radio" id="aviso" value={'aviso'} {...register('pushType')} />
-                                        <label className="ml-1 text-base text-gray-500" htmlFor="aviso">Aviso</label>
-                                    </div>
-
-                                </div>
-                            </div> */}
-
-                            {/* <div className="flex flex-col mt-3">
-                                <label className="label-form" htmlFor="pesquisa">
-                                    Pesquisa
-                                </label>
-                                <input
-                                    className="input-form"
-                                    type="text"
-                                    {...register('pesquisa')}
-                                />
-                            </div> */}
-
                             <div className="flex flex-col mt-3">
                                 <label className="label-form" htmlFor="url">
                                     Link web
@@ -323,9 +316,10 @@ const EnviarPush = () => {
                                     Token do celular
                                 </label>
                                 <textarea
-                                    className="input-form"
+                                    className={`input-form ${checked ? 'bg-gray-200' : ''} !text-xs`}
                                     {...register('token')}
-                                    readOnly
+                                    disabled
+                                    rows={6}
                                 />
                             </div>
                             {errors.token?.message && (
@@ -338,7 +332,7 @@ const EnviarPush = () => {
                             <button
                                 className="btn-save"
                             >
-                                {loading ? <RiLoader3Fill size={24} color={'#f3f3f3'} className="animate-spin" /> : 'Enviar push'}
+                                {loading ? <RiLoader3Fill size={24} color={'#f3f3f3'} className="animate-spin" /> : 'Enviar mensagem'}
                             </button>
                         </div>
                     </form>

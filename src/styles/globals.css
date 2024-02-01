@@ -10,7 +10,7 @@
 
 @layer components {
   .btn-save {
-    @apply inline-flex items-center gap-2 rounded-md border border-blue-700 shadow-md bg-blue-600 px-5 py-1 font-roboto font-medium text-white transition-colors hover:bg-blue-700;
+    @apply inline-flex items-center gap-2 rounded-md border-2 border-white shadow-md bg-blue-secundary px-5 py-1.5 font-roboto font-normal text-white transition-colors hover:bg-blue-primary;
   }
   .error-message {
     @apply bg-yellow-100 text-sm p-2 text-red-500 rounded border border-red-200;
@@ -19,6 +19,6 @@
     @apply text-base text-gray-500 font-semibold;
   }
   .input-form {
-    @apply rounded-md p-2 bg-white text-base text-gray-600 border border-gray-300 outline-none;
+    @apply rounded-md p-2 bg-white text-base text-gray-500 border border-gray-300 outline-none;
   }
 }
