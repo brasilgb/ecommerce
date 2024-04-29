@@ -10,7 +10,7 @@
 
 @layer components {
   .btn-save {
-    @apply inline-flex items-center gap-2 rounded-md border-2 border-white shadow-md bg-blue-secundary px-5 py-1.5 font-roboto font-normal text-white transition-colors hover:bg-blue-primary;
+    @apply inline-flex items-center gap-2 rounded-md border-2 border-white shadow-md bg-solar-blue-secundary px-5 py-1.5 font-roboto font-normal text-white transition-colors hover:bg-solar-blue-primary;
   }
   .error-message {
     @apply bg-yellow-100 text-sm p-2 text-red-500 rounded border border-red-200;

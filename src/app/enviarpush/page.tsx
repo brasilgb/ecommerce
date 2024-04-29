@@ -44,7 +44,7 @@ const EnviarPush = () => {
     const [customersFound, setCustomersFound] = useState<any>(null);
     const [valueCustomerCod, setValueCustomerCod] = useState<string>('');
 
-    const { register, handleSubmit, formState: { errors }, getValues, setValue, reset } = useForm<FormData>({
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm<FormData>({
         defaultValues: {
             allCli: "",
             codCli: "",
@@ -55,7 +55,7 @@ const EnviarPush = () => {
             image: "",
             token: ""
         },
-        mode: 'onBlur',
+        mode: 'onSubmit',
         resolver: zodResolver(schema),
     });
 
@@ -71,8 +71,8 @@ const EnviarPush = () => {
                 if (success) {
                     const token = customers.map((tk: any) => (tk.token));
                     const name = customers.map((tk: any) => (tk.name));
-                    setValue('nameCli', name);
-                    setValue('token', JSON.stringify(token));
+                    setValue('nameCli', name, { shouldValidate: true });
+                    setValue('token', JSON.stringify(token), { shouldValidate: true });
                     setAllTokens(token);
                     setLoadingSearch(false);
                     setCustomerError(null)
@@ -103,7 +103,7 @@ const EnviarPush = () => {
                         setLoadingAll(false);
                         const datatk = result.data.response.customers;
                         const gertoken = datatk.map((tk: any) => (tk.token));
-                        setValue('token', JSON.stringify(gertoken));
+                        setValue('token', JSON.stringify(gertoken), { shouldValidate: true });
                         setAllTokens(gertoken);
                         setCustomersFound(`Encontrados ${datatk.length} clientes para o envio de notificações.`);
                     })
@@ -173,8 +173,8 @@ const EnviarPush = () => {
     return (
         <>
             <div className="md:w-2/4 mx-auto bg-gray-50 rounded-md shadow mt-4 border border-white">
-                <div className="relative flex items-center justify-start bg-blue-light px-3 py-2 rounded-t-md">
-                    <div className="absolute bg-white hover:bg-gray-50 -left-10 text-blue-light rounded-l-full w-8 h-8 flex items-center justify-center mx-2 shadow">
+                <div className="relative flex items-center justify-start bg-solar-blue-primary px-3 py-2 rounded-t-md">
+                    <div className="absolute bg-white hover:bg-gray-50 -left-10 text-solar-blue-primary rounded-l-full w-8 h-8 flex items-center justify-center mx-2 shadow">
                         <Link
                             href="http://portal.gruposolar.com.br/ecommerce"
                         >
@@ -195,7 +195,7 @@ const EnviarPush = () => {
                             <h1 className={`text-lg ml-8 ${pushStatus ? 'text-green-700' : 'text-red-700'}`}>{pushEnviado}</h1>
                         </div>
                     }
-                    <form name="formPush" onSubmit={handleSubmit(submitPush)}>
+                    <form onSubmit={handleSubmit(submitPush)}>
                         <div className="px-3">
                             <div className="flex flex-col mt-6">
                                 <div className="flex items-center justify-start">
@@ -208,7 +208,7 @@ const EnviarPush = () => {
                                     <label className="label-form ml-2">Disparar para todos os clientes</label>
                                 </div>
                                 {customersFound && (
-                                    <div className="text-sm text-blue-light">
+                                    <div className="text-sm text-solar-blue-primary">
                                         {customersFound}
                                     </div>
                                 )}
@@ -328,8 +328,9 @@ const EnviarPush = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="bg-white rounded-b-md border-t mt-4 p-3 flex items-center justify-end">
+                        <div className={`bg-white rounded-b-md border-t mt-4 p-3 flex items-center justify-end`}>
                             <button
+                                type="submit"
                                 className="btn-save"
                             >
                                 {loading ? <RiLoader3Fill size={24} color={'#f3f3f3'} className="animate-spin" /> : 'Enviar mensagem'}

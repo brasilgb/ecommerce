@@ -1,8 +1,7 @@
 import LinkApp from "@/components/linkapp";
-import { checkUserUrlAccess } from "@/functions/check-user-url-access";
 
 export default function Home() {
-  console.log(checkUserUrlAccess());
+
   return (
     <main>
       <head>
@@ -13,12 +12,12 @@ export default function Home() {
       </div>
       <div className="grid md:grid-cols-4">
         <LinkApp
-          bgColor="bg-blue-light"
+          bgColor="bg-solar-blue-primary"
           title='Enviar push'
           url="/enviarpush"
-          titleColor="text-gray-light"
+          titleColor="text-solar-gray-light"
           text="Envia mensagem ao telefone do cliente"
-          textColor="text-gray-dark"
+          textColor="text-solar-gray-light"
         />
       </div>
     </main>

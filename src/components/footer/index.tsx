@@ -1,12 +1,14 @@
-'use client'
-import React from 'react'
-import moment from "moment"
-const Footer = () => {
-    return (
-        <div className="w-full py-1 bg-gray-light border-t border-white drop-shadow-md">
-            <p className="text-xs text-center text-gray-700">{moment().format("YYYY")} Solar Comércio e Agroindústria Ltda. Todos os direitos reservados. | Desenvolvido por TI - Sistemas | Grupo Solar</p>
-        </div>
-    )
-}
+import moment from 'moment';
+import React from 'react';
 
-export default Footer
+const Footer = () => {
+  return (
+    <div className="flex items-center justify-center py-0.5 bg-solar-blue-secundary">
+      <p className="md:text-xs text-[8px] text-solar-gray-light">
+        &copy; {moment().format('YYYY')} Solar Comércio e Agroindústria Ltda.
+      </p>
+    </div>
+  );
+};
+
+export default Footer;

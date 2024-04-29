@@ -8,7 +8,7 @@ const Logo = () => {
     <Link
     href="http://portal.gruposolar.com.br"
     >
-    <Image src={require('@/assets/images/logo_grupo_blue.png')} alt={"Logo"} height={40} />
+    <Image src={require('@/assets/logo/logo_grupo_blue.png')} alt={"Logo"} height={40} />
     </Link>
   )
 }
