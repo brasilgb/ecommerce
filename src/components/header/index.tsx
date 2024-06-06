@@ -13,8 +13,18 @@ const Header = () => {
 
   return (
     <header
-      className={`bg-solar-blue-primary px-2`}
+      className={`bg-solar-blue-primary px-2 flex flex-row`}
     >
+      {apps > 1 &&
+        <div className="flex-none flex items-center justify-left mr-2">
+          <Link
+            href="http://portal.gruposolar.com.br"
+            className="rounded-md px-1 py-1 flex items-center justify-center border-2 border-white shadow-md duration-300 bg-solar-green-prymary text-white"
+          >
+            <IoArrowBack />
+          </Link>
+        </div>
+      }
       <div className="container py-1 mx-auto flex items-center justify-between h-16">
         <div
           className={`flex items-center w-28 p-0.5`}
@@ -29,16 +39,6 @@ const Header = () => {
             />
           </Link>
         </div>
-        {apps > 1 &&
-          <div className="flex-1 flex items-center justify-left pl-4">
-            <Link
-              href="http://portal.gruposolar.com.br"
-              className="rounded-md px-3 py-1 flex items-center justify-center border-2 border-white shadow-md duration-300 bg-solar-green-prymary text-white"
-            >
-              <IoArrowBack /><span className="text-xs font-semibold uppercase ml-2 drop-shadow-sm">Portal</span>
-            </Link>
-          </div>
-        }
         <div>
           <Profile />
         </div>
