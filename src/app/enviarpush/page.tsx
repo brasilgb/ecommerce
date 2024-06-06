@@ -71,6 +71,7 @@ const EnviarPush = () => {
                 if (success) {
                     const token = customers.map((tk: any) => (tk.token));
                     const name = customers.map((tk: any) => (tk.name));
+                    console.log(customers);
                     setValue('nameCli', name, { shouldValidate: true });
                     setValue('token', JSON.stringify(token), { shouldValidate: true });
                     setAllTokens(token);

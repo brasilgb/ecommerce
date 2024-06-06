@@ -4,10 +4,12 @@ import Image from 'next/image';
 import Profile from "../profile/profile"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation";
+import { IoArrowBack } from "react-icons/io5";
 
 const Header = () => {
-  const searchParams = useSearchParams();
-  const depto = searchParams.get('depto');
+  let stringdata: any = localStorage.getItem('portal_user');
+  const jsondata = JSON.parse(stringdata);
+  const apps = jsondata?.folders?.length;
 
   return (
     <header
@@ -27,6 +29,16 @@ const Header = () => {
             />
           </Link>
         </div>
+        {apps > 1 &&
+          <div className="flex-1 flex items-center justify-left pl-4">
+            <Link
+              href="http://portal.gruposolar.com.br"
+              className="rounded-md px-3 py-1 flex items-center justify-center border-2 border-white shadow-md duration-300 bg-solar-green-prymary text-white"
+            >
+              <IoArrowBack /><span className="text-xs font-semibold uppercase ml-2 drop-shadow-sm">Portal</span>
+            </Link>
+          </div>
+        }
         <div>
           <Profile />
         </div>
