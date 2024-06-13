@@ -3,7 +3,6 @@ import React from 'react'
 import Image from 'next/image';
 import Profile from "../profile/profile"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation";
 import { IoArrowBack } from "react-icons/io5";
 
 const Header = () => {
@@ -13,10 +12,10 @@ const Header = () => {
 
   return (
     <header
-      className={`bg-solar-blue-primary px-2 flex flex-row`}
+      className={`bg-solar-blue-primary px-2 flex items-center`}
     >
       {apps > 1 &&
-        <div className="flex-none flex items-center justify-left mr-2">
+        <div className="flex-none flex items-center justify-left">
           <Link
             href="http://portal.gruposolar.com.br"
             className="rounded-md px-1 py-1 flex items-center justify-center border-2 border-white shadow-md duration-300 bg-solar-green-prymary text-white"

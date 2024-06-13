@@ -1,6 +1,8 @@
+import { getCookie } from "cookies-next";
+
 export const checkUserUrlAccess = () => {
     if (typeof window !== 'undefined') {
-        const userLogged: any = localStorage.getItem('portal_user');
+        const userLogged: any = getCookie('portal_access');
         if (userLogged) {
             const path = window.location.pathname;
             const { folders } = JSON.parse(userLogged);
