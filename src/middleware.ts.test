@@ -4,13 +4,13 @@ import cookie from 'cookie';
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const cookies = req.headers.get('cookie') || '';
-  const { portal_user } = cookie.parse(cookies);
+  const { portal_access } = cookie.parse(cookies);
 
-  if (!portal_user) {
+  if (!portal_access) {
     return NextResponse.redirect(new URL('/acesso-negado', req.url));
   }
 
-  const user = JSON.parse(portal_user);
+  const user = JSON.parse(portal_access);
   const allowedPaths = user.folders.map((folder: { path: string }) => folder.path);
 
   const isPathAllowed = allowedPaths.some((allowedPath: string) => pathname.startsWith(`${allowedPath}`));
