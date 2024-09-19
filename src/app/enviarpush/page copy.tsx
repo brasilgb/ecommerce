@@ -131,24 +131,37 @@ const EnviarPush = () => {
         return chunks;
     };
 
-    const parts = array_chunk(allTokens, 500);
+    const parts = array_chunk(allTokens, 99);
     // const partsmap = parts.map((part: any, idx: number) => (
     //     console.log(`or partes de 99 --> ${idx}`, part)
     // ));
 
     const submitPush = async (data: any) => {
         setLoading(true);
-
+        const firebase_api_key = "AAAAM-_KeU4:APA91bGUHCmXD9jH7wkxPM1-6gZqR06jRJ6NyyVNBlbJW1TugXpKqKKY4Cxub92kqC-TmohGYyOaze63Dsb7AGxvNPC5QRK-IBu7crQ2ujMbslBTSdXEN4uVsHTdxWL2b8yYyboKrNGe"
+        // const message = {
+        //     "registration_ids": allTokens,
+        //     "data": {
+        //         "title": `${data.title}`,
+        //         "body": `${data.body}`,
+        //         "url": `${data.url ? data.url : '#'}`,
+        //         "image": `${data.image ? data.image : '#'}`
+        //     },
+        //     "contentAvailable": true,
+        //     "priority": "high"
+        // }
         let headers = {
+            "Authorization": `Bearer ${firebase_api_key}`,
             "Content-Type": "application/json",
         }
         try {
             parts.map(async (part: any, idx: number) => {
-                const response = await fetch("http://localhost:3333/send", {
+                // https://fcm.googleapis.com/v1/projects/AppLojaSolar/messages:send
+                const response = await fetch("https://fcm.googleapis.com/v1/projects/AppLojaSolar/messages:send", {
                     method: "POST",
                     headers: headers,
                     body: JSON.stringify({
-                        tokens: part,
+                        "registration_ids": part,
                         "data": {
                             "title": `${data.title}`,
                             "body": `${data.body}`,
@@ -157,10 +170,11 @@ const EnviarPush = () => {
                         },
                         "contentAvailable": true,
                         "priority": "high"
-                    })
-                }) as any;
+                    }) as any
+                });
                 setLoading(false);
-                const { success, failure, message }: any = await response.json();
+                const { success, failure, results }: any = await response.json();
+                console.log(success, failure, results);
 
                 if (success === 1 && failure === 0) {
                     setPushEnviado(`Envio de mensagem: Successo(${success}), Falha(${failure})`);
