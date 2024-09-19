@@ -144,7 +144,7 @@ const EnviarPush = () => {
         }
         try {
             parts.map(async (part: any, idx: number) => {
-                const response = await fetch("http://localhost:3333/send", {
+                const response = await fetch("https://portal.gruposolar.com.br/send", {
                     method: "POST",
                     headers: headers,
                     body: JSON.stringify({
