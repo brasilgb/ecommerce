@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IoAlertCircle, IoArrowBack, IoCheckmark, IoCheckmarkCircle, IoNotifications, IoSearch } from "react-icons/io5";
-import { RiLoader3Fill } from "react-icons/ri";
+
 
 interface PushProps {
     allCli: boolean;
@@ -163,11 +163,11 @@ const EnviarPush = () => {
                 const { success, failure, message }: any = await response.json();
 
                 if (success === 1 && failure === 0) {
-                    setPushEnviado(`Envio de mensagem: Successo(${success}), Falha(${failure})`);
+                    setPushEnviado(`Envio de mensagem: Sucesso(${success}), Falha(${failure})`);
                     setPushStatus(true);
                     reset({});
                 } else {
-                    setPushEnviado(`Envio de mensagem: Successo(${success}), Falha(${failure})`);
+                    setPushEnviado(`Envio de mensagem: Sucesso(${success}), Falha(${failure})`);
                     setPushStatus(failure > 0 ? false : true);
                 }
             })
@@ -226,7 +226,7 @@ const EnviarPush = () => {
                                 {loadingAll &&
                                     <div className="flex items-center justify-center fixed top-0 right-0 bottom-0 left-0 bg-gray-700 bg-opacity-50">
                                         <div className="flex items-center justify-center bg-white p-6 rounded shadow-lg">
-                                            <div><RiLoader3Fill size={32} color={'#949494'} className="animate-spin" /></div>
+                                            <div>spin</div>
                                             <div className="text-xl text-gray-500">Aguarde buscando clientes...</div>
                                         </div>
                                     </div>
@@ -251,7 +251,7 @@ const EnviarPush = () => {
                                             disabled={checked || valueCustomerCod === "" ? true : false}
                                             className={`input-form !rounded-l-none ${checked || valueCustomerCod === "" ? 'bg-gray-200' : ''}`}
                                         >
-                                            {loadingSearch ? <RiLoader3Fill size={24} color={'#949494'} className="animate-spin" /> : <IoSearch size={24} color={'#949494'} />}
+                                            {loadingSearch ? 'spin' : <IoSearch size={24} color={'#949494'} />}
                                         </button>
                                     </div>
                                     <input

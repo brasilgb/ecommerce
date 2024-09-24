@@ -3,7 +3,7 @@ import React from 'react'
 import Image from 'next/image';
 import Profile from "../profile/profile"
 import Link from "next/link"
-import { IoArrowBack } from "react-icons/io5";
+// import { IoArrowBack } from "react-icons/io5";
 
 const Header = () => {
   let stringdata: any = localStorage.getItem('portal_user');
@@ -20,7 +20,7 @@ const Header = () => {
             href="http://portal.gruposolar.com.br"
             className="rounded-md px-1 py-1 flex items-center justify-center border-2 border-white shadow-md duration-300 bg-solar-green-prymary text-white"
           >
-            <IoArrowBack />
+            {/* <IoArrowBack /> */}
           </Link>
         </div>
       }

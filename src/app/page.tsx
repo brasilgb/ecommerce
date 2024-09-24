@@ -13,10 +13,10 @@ export default function Home() {
       <div className="grid md:grid-cols-4">
         <LinkApp
           bgColor="bg-solar-blue-primary"
-          title='Enviar push'
-          url="/enviarpush"
+          title='Mensagem ou notificação'
+          url="/sendmessage"
           titleColor="text-solar-gray-light"
-          text="Envia mensagem ao telefone do cliente"
+          text="Enviar mensagens ou notificações ao telefone do cliente"
           textColor="text-solar-gray-light"
         />
       </div>
