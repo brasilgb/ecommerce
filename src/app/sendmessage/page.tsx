@@ -275,10 +275,11 @@ const SendMessage = () => {
                         </div>
                         <FormControl>
                           <Textarea
-                            disabled={checked ? true : false}
+                            disabled
                             className=""
                             name="token"
                             id="token"
+                            rows={2}
                             value={form.getValues('token')}
                             onChange={(e) => form.setValue('token', e.target.value)}
                           />
