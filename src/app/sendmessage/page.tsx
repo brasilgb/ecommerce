@@ -53,7 +53,7 @@ const SendMessage = () => {
     setSendingFail(0);
     setPushEnviado('');
     let cliValidate = form.getValues('codCli');
-    if (cliValidate === '0') { setFindMessage('Nenhum cliente encontrado para o filtro informado'); return; }
+    if (cliValidate === '0' || cliValidate === '') { setFindMessage('Nenhum cliente encontrado para o filtro informado'); return; }
     handleNotifyCustomers(codcli);
   }
 
