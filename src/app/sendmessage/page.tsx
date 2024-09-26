@@ -101,7 +101,7 @@ const SendMessage = () => {
     return chunks;
   };
 
-  const parts = array_chunk(customerTokens, 500);
+  const parts = array_chunk(customerTokens, 250);
 
   const submitPush = async (data: any) => {
     setLoading(true);
