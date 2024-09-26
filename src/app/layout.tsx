@@ -29,7 +29,7 @@ export default function RootLayout({
         <title>Envio de Push - Portal Grupo Solar</title>
       </head>
       <body className={`${roboto.variable}`}>
-      <div className="h-screen flex flex-col bg-zinc-200">
+      <div className="min-h-screen flex flex-col bg-zinc-200">
           <AuthProvider>
             {isPublicPage && children}
             {!isPublicPage && (
