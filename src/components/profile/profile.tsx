@@ -1,5 +1,6 @@
 'use client';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { ChevronDown, KeyRound, LogOut, UserRound } from "lucide-react";
 // import { useAuthContext } from "@/contexts/AuthContext";
 import Link from 'next/link';
 import { useState } from 'react';
@@ -24,21 +25,21 @@ const Profile = () => {
           onClick={toggle}
         >
           <div className="text-gray-700">
-            {/* <IoPerson color="#F6F5FA" size={20} /> */}
+            <UserRound color="#F6F5FA" size={20} />
           </div>
           <div className="text-gray-700">
-            {/* <MdOutlineKeyboardArrowDown
+            <ChevronDown
               color="#F6F5FA"
               size={20}
               className={`duration-300 ${isOpen ? '-rotate-180' : 'rotate-0'}`}
-            /> */}
+            />
           </div>
         </button>
         <div
           className={`absolute top-11 right-0 z-30 w-[350px] flex flex-col py-4 bg-gray-50 rounded-md shadow-lg border border-white ${transClass}`}
         >
           <span className="text-sm text-gray-600 px-4 pb-3 flex items-center">
-            {/* <IoPerson color="#6d6a6a" size={20} /> */}
+            <UserRound color="#6d6a6a" size={20} />
             <span className="ml-1">{user?.userName}</span>
           </span>
           <span className="w-full border-b border-gray-200"></span>
@@ -47,14 +48,14 @@ const Profile = () => {
             href={`https://portal.gruposolar.com.br/changepassword?firstAccess=false&code=${user?.userCode}`}
             onClick={() => setIsOpen(false)}
           >
-            {/* <IoKey color="#6d6a6a" size={20} /> */}
+            <KeyRound color="#6d6a6a" size={20} />
             <span className="ml-1">Alterar minha senha</span>
           </Link>
           <button
             className="text-gray-600 hover:text-gray-400 px-4 pt-2 flex items-center"
             onClick={signOut}
           >
-            {/* <IoExit color="#6d6a6a" size={20} /> */}
+            <LogOut color="#6d6a6a" size={20} />
             <span className="ml-1">Sair</span>
           </button>
         </div>

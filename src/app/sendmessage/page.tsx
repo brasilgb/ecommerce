@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react'
 import { Checkbox } from "@/components/ui/checkbox";
-import { AlertTriangleIcon, Bell, Check, Lightbulb, Search, Send } from "lucide-react";
+import { AlertTriangleIcon, Bell, Check, CircleArrowLeft, Lightbulb, Search, Send } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Loading from "../loading";
 import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const sendSchema = z.object({
   allCli: z.boolean().optional(),
@@ -140,16 +142,19 @@ const SendMessage = () => {
       setLoading(false);
     });
   }
-
+  const router = useRouter();
   return (
     <>
       {loading &&
         <Loading />
       }
       <div className="flex flex-col h-full w-full bg-gray-50 shadow-sm rounded-md border border-white">
-        <header className="bg-gray-100 rounded-t-md px-4 py-2 flex items-center justify-start gap-4 text-zinc-600 border-b">
+        <header className="bg-gray-100 rounded-t-md px-4 py-2 flex items-center justify-between gap-4 text-zinc-600 border-b">
           <Bell />
-          <h1 className="text-lg font-medium">Enviar mensagem ou notificação</h1>
+          <h1 className="text-lg font-medium flex-1">Enviar mensagem ou notificação</h1>
+          <button onClick={() => router.back()}>
+            <CircleArrowLeft />
+          </button>
         </header>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(submitPush)} className="space-y-4">

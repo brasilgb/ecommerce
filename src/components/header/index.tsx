@@ -9,7 +9,6 @@ const Header = () => {
   let stringdata: any = localStorage.getItem('portal_user');
   const jsondata = JSON.parse(stringdata);
   const apps = jsondata?.folders?.length;
-
   return (
     <header
       className={`bg-solar-blue-primary px-2 flex items-center`}
