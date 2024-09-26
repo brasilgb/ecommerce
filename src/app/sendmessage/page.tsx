@@ -101,7 +101,7 @@ const SendMessage = () => {
     return chunks;
   };
 
-  const parts = array_chunk(customerTokens, 1);
+  const parts = array_chunk(customerTokens, 500);
 
   const submitPush = async (data: any) => {
     setLoading(true);
@@ -110,39 +110,34 @@ const SendMessage = () => {
       "Content-Type": "application/json",
     }
     parts.forEach(async (part) => {
-      try {
-        const response = await fetch("https://portal.gruposolar.com.br/send", {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify({
-            tokens: part,
-            "data": {
-              "title": `${data.title}`,
-              "body": `${data.body}`,
-              "url": `${data.url ? data.url : '#'}`,
-              "image": `${data.image ? data.image : '#'}`
-            },
-            "contentAvailable": true,
-            "priority": "high"
-          })
-        }) as any;
-        const { success, failure, message }: any = await response.json();
-        if (success === 1 && failure === 0) {
-          setSendingSuccess(current => current + success);
-          setSendingFail(current => current + failure);
-          setPushEnviado(message);
-        } else {
-          setSendingSuccess(current => current + success);
-          setSendingFail(current => current + failure);
-          setPushEnviado(message);
-        }
-        form.reset()
-        setCustomerTokens([]);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.error("Error:", error);
+      const response = await fetch("https://portal.gruposolar.com.br/send", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({
+          tokens: part,
+          "data": {
+            "title": `${data.title}`,
+            "body": `${data.body}`,
+            "url": `${data.url ? data.url : '#'}`,
+            "image": `${data.image ? data.image : '#'}`
+          },
+          "contentAvailable": true,
+          "priority": "high"
+        })
+      }) as any;
+      const { success, failure, message }: any = await response.json();
+      if (success === 1 && failure === 0) {
+        setSendingSuccess(current => current + success);
+        setSendingFail(current => current + failure);
+        setPushEnviado(message);
+      } else {
+        setSendingSuccess(current => current + success);
+        setSendingFail(current => current + failure);
+        setPushEnviado(message);
       }
+      form.reset()
+      setCustomerTokens([]);
+      setLoading(false);
     });
   }
 
